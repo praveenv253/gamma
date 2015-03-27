@@ -103,6 +103,24 @@ def shape(data, points, kind='slinear'):
     shape = interp(np.arange(len(data)) * factor)
     return data * shape
 
+def shape_freq(data, points):
+    """Interpolate with cosines"""
+    xy_pairs = list(points)
+    #print xy_pairs
+    n = data.size
+    modulator = np.ones(n)
+    for i in range(len(xy_pairs) - 1):
+        (x1, y1) = xy_pairs[i]
+        (x2, y2) = xy_pairs[i+1]
+        start_index = round(x1 * n)
+        end_index = round(x2 * n)
+        wave = 0.5 + 0.5 * np.cos(np.pi * np.linspace(0, 1,
+                                                      end_index - start_index))
+        wave *= (y1 - y2)
+        wave += y2
+        modulator[start_index:end_index] = wave
+    return data * modulator
+
 def harmonics1(freq, length):
     a = sine(freq * 1.00, length, 44100)
     b = sine(freq * 2.00, length, 44100) * 0.5
@@ -160,9 +178,10 @@ def from_next(note1, note2, times=1, lamda_shape=None):
     lamdas = np.ones(n / times) * float(delta_lamda)
     # Define the shape if not given
     if lamda_shape is None:
-        lamda_shape = {0.0:1.0, 0.1:1.0, 0.2:1.0, 0.3:0.9, 0.4:0.75, 0.5:0.5,
-                       0.6:0.25, 0.7:0.10, 0.8:0.02, 0.9:0.0, 1.0:0.0}
-    lamdas = shape(lamdas, lamda_shape, kind='quadratic')
+        #lamda_shape = {0.0:1.0, 0.1:1.0, 0.2:1.0, 0.3:0.9, 0.4:0.75, 0.5:0.5,
+        #               0.6:0.25, 0.7:0.10, 0.8:0.02, 0.9:0.0, 1.0:0.0}
+        lamda_shape = [(0.0, 1.0), (0.2, 1.0), (0.6, 0.0), (1.0, 0.0)]
+    lamdas = shape_freq(lamdas, lamda_shape)
     lamdas += lamda1
     freqs = 1. / lamdas
     freqs = np.concatenate([freqs, ] * times)
@@ -176,4 +195,4 @@ def from_next(note1, note2, times=1, lamda_shape=None):
     chunk += 0.5 * np.sin(2 * np.pi * 2 * phase) # Third harmonic
     chunk += 0.125 * np.sin(2 * np.pi * 4 * phase) # Fifth harmonic
     chunk *= 0.2
-    return shape(chunk, {0.0:0.0, 0.05:1.0, 1.0:1.0})
+    return shape_freq(chunk, [(0.0, 0.0), (0.05, 1.0), (1.0, 1.0)])

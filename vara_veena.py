@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from music_base import *
 
 if __name__ == '__main__':
-    root = Note('G', 4)
+    root = Note('G', 3)
     scale = Scale(root, [2, 2, 1, 2, 2, 2, 1])
 
     sa_note = scale.get(0)
@@ -44,9 +44,7 @@ if __name__ == '__main__':
     uga_flat_fall = flat_fall(uga_note)
 
     rig = from_next(ri_note, ga_note, 1)
-    dag = from_next(da_note, usa_note, 1,
-                    {0.0:1.0, 0.1:0.8, 0.2:0.5, 0.3:0.32, 0.4:0.2, 0.5:0.11,
-                     0.6:0.05, 0.7:0.02, 0.8:0.0, 0.9:0.0, 1.0:0.0})
+    dag = from_next(da_note, usa_note, 1)
     urig = from_next(uri_note, uga_note, 1)
 
     chunks = []
@@ -81,7 +79,6 @@ if __name__ == '__main__':
                 prev_note = swaram[:-1]
             else:
                 prev_note = swaram
-            print swaram, prev_note
         else:
             chunks.append(locals()[prev_note + '_flat_fall'])
 

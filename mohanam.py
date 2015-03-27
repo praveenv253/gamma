@@ -5,7 +5,7 @@ import pyaudio
 
 from music_base import *
 
-if __name__ == '__main__':
+def main():
     root = Note('G', 3)
     scale = Scale(root, [2, 2, 1, 2, 2, 2, 1])
 
@@ -59,3 +59,6 @@ if __name__ == '__main__':
     stream.write(chunk.astype(np.float32).tostring())
     stream.close()
     p.terminate()
+
+if __name__ == '__main__':
+    main()
