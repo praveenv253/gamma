@@ -21,6 +21,18 @@ def parse(song_text):
           It stays at Ga for some time, then goes to Pa, and returns to Ga,
           as in 'Ga-,-Pa-Ga'.
     """
+
+    """
+    This parser, as defined, is not sufficiently complex.
+
+    I'd like to create a parser/de-parser that is capable of creating/storing
+    extremely complex waveforms to a decent level of approximation.
+
+    There is the matter of identifying the fundamental, i.e. Sa, but let us
+    keep that aside for a moment and concentrate only on the parser design
+    itself.
+    """
+
     swaras = song_text.split()
     for swara in swaras:
 
